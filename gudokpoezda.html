@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Audio and Image Transition</title>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden; /* Prevent scrollbars */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: black; /* Default background before anything happens */
+        transition: background-color 0.5s ease-out; /* Smooth transition for flash */
+    }
+
+    #playButton {
+        padding: 20px;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 1.5em; /* Make it visible even without text */
+        color: white; /* For visibility if you decide to add a small icon later */
+    }
+
+    #flashOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        opacity: 0; /* Initially invisible */
+        pointer-events: none; /* Don't interfere with clicks */
+        transition: opacity 0.5s ease-out; /* Smooth fade out */
+    }
+
+    #trainImage {
+        display: none; /* Hidden by default */
+        max-width: 100%;
+        max-height: 100vh;
+        object-fit: contain; /* Ensure the image fits without distortion */
+    }
+</style>
+</head>
+<body>
+
+<audio id="audioPlayer" src="gudokpoezda.mp3" preload="auto"></audio>
+
+<button id="playButton" aria-label="Play Audio and Show Image"></button>
+
+<div id="flashOverlay"></div>
+
+<img id="trainImage" src="train.jpg" alt="Train Image">
+
+<script>
+    const audioPlayer = document.getElementById('audioPlayer');
+    const playButton = document.getElementById('playButton');
+    const flashOverlay = document.getElementById('flashOverlay');
+    const trainImage = document.getElementById('trainImage');
+    const body = document.body;
+
+    playButton.addEventListener('click', () => {
+        // 1. Play the audio
+        audioPlayer.play();
+
+        // 2. Flash the screen white
+        body.style.backgroundColor = 'white'; // Make body white immediately
+        flashOverlay.style.opacity = '1'; // Make the overlay fully opaque
+
+        // 3. After a short delay (to allow the white flash to be perceived)
+        setTimeout(() => {
+            // Show the train image
+            trainImage.style.display = 'block';
+            // Center the image within the viewport
+            trainImage.style.position = 'fixed';
+            trainImage.style.top = '50%';
+            trainImage.style.left = '50%';
+            trainImage.style.transform = 'translate(-50%, -50%)';
+
+
+            // Fade out the white flash
+            flashOverlay.style.opacity = '0';
+            body.style.backgroundColor = 'black'; // Return body to black (or your desired background)
+
+            // Once the flash is completely faded, remove the overlay
+            setTimeout(() => {
+                flashOverlay.style.display = 'none';
+            }, 500); // Match the transition duration
+        }, 50); // A very small delay for the initial white flash before showing the image
+    });
+
+    // Optional: Preload the image for smoother display
+    trainImage.onload = () => {
+        console.log("Train image loaded.");
+    };
+</script>
+
+</body>
+</html>
